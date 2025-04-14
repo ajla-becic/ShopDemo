@@ -1,5 +1,6 @@
 
 using AbySalto.Mid.Application;
+using AbySalto.Mid.WebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
@@ -66,6 +67,7 @@ namespace AbySalto.Mid
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 
             app.MapControllers();

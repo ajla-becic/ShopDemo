@@ -16,6 +16,11 @@ namespace AbySalto.Mid.Application.QueryHandler
 
         public async Task<List<BasketItem>?> Handle(GetBasketQuery request, CancellationToken cancellationToken)
         {
+            if(request.UserId == 0)
+            {
+                throw new InvalidOperationException("Id cannot be 0");
+            }
+
             var user = await _userRepository.GetFullObjectById(request.UserId, cancellationToken);
             return user.Basket?.BasketItems?.ToList();
         }

@@ -24,7 +24,10 @@ namespace AbySalto.Mid.Application.CommandHandlers
         {
             var basketItem = await _basketItemRepository.GetByIdAsync(request.BasketItemId);
 
-            if (basketItem == null) { return; }
+            if (basketItem == null)
+            {
+                throw new ArgumentNullException("Item not found");
+            }
 
             _basketItemRepository.Delete(basketItem);
 

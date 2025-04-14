@@ -23,7 +23,7 @@ namespace AbySalto.Mid.Application.CommandHandlers
 
             if (user?.Id == null)
             {
-                return;
+                throw new ArgumentNullException("No user found");
             }
 
             var existing = user.Basket?.BasketItems.FirstOrDefault(c => c.ProductId == request.ProductId);

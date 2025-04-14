@@ -31,6 +31,11 @@ namespace AbySalto.Mid.Application.QueryHandler
 
         public async Task<Product> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
+            if (request.Id == 0)
+            {
+                throw new InvalidOperationException("Id cannot be 0");
+            }
+
             return await _productService.GetProductByIdAsync(request.Id);
         }
     }
