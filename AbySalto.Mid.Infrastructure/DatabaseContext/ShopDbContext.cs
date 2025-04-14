@@ -14,16 +14,11 @@ namespace AbySalto.Mid.Infrastructure.DatabaseContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Basket)
-                .WithOne()
-                .HasForeignKey<Basket>(b => b.UserId)
-                .OnDelete(DeleteBehavior.Cascade);  // This ensures cascading save operations
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<FavoriteCollectionItem> FavoriteCollectionItems { get; set; }
     }
 }

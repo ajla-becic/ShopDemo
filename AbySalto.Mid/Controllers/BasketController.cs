@@ -1,12 +1,14 @@
 ﻿using AbySalto.Mid.Application.Commands;
 using AbySalto.Mid.Application.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AbySalto.Mid.Controllers
 {
     [Route("api/basket")]
     [ApiController]
+    [Authorize]
     public class BasketController : Controller
     {
         private readonly IMediator _mediator;

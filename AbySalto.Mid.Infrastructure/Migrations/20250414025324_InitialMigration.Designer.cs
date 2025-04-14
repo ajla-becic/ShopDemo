@@ -3,6 +3,7 @@ using AbySalto.Mid.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AbySalto.Mid.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414025324_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,28 +64,31 @@ namespace AbySalto.Mid.Infrastructure.Migrations
 
                     b.HasIndex("BasketId");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("BasketItem");
                 });
 
-            modelBuilder.Entity("AbySalto.Mid.Domain.Models.FavoriteCollectionItem", b =>
+            modelBuilder.Entity("AbySalto.Mid.Domain.Models.Product", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("FavoriteCollectionItems");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.User", b =>
@@ -122,15 +128,14 @@ namespace AbySalto.Mid.Infrastructure.Migrations
                         .HasForeignKey("BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("AbySalto.Mid.Domain.Models.FavoriteCollectionItem", b =>
-                {
-                    b.HasOne("AbySalto.Mid.Domain.Models.User", null)
-                        .WithMany("FavoriteCollectionItems")
-                        .HasForeignKey("UserId")
+                    b.HasOne("AbySalto.Mid.Domain.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.Basket", b =>
@@ -141,8 +146,6 @@ namespace AbySalto.Mid.Infrastructure.Migrations
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.User", b =>
                 {
                     b.Navigation("Basket");
-
-                    b.Navigation("FavoriteCollectionItems");
                 });
 #pragma warning restore 612, 618
         }

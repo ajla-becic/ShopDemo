@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AbySalto.Mid.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20250414013658_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250414033754_ManageFavoritesAndProducts")]
+    partial class ManageFavoritesAndProducts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,12 +64,10 @@ namespace AbySalto.Mid.Infrastructure.Migrations
 
                     b.HasIndex("BasketId");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("BasketItem");
                 });
 
-            modelBuilder.Entity("AbySalto.Mid.Domain.Models.Product", b =>
+            modelBuilder.Entity("AbySalto.Mid.Domain.Models.FavoriteCollectionItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,21 +75,17 @@ namespace AbySalto.Mid.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Product");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FavoriteCollectionItems");
                 });
 
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.User", b =>
@@ -117,32 +111,29 @@ namespace AbySalto.Mid.Infrastructure.Migrations
 
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.Basket", b =>
                 {
-                    b.HasOne("AbySalto.Mid.Domain.Models.User", "User")
+                    b.HasOne("AbySalto.Mid.Domain.Models.User", null)
                         .WithOne("Basket")
                         .HasForeignKey("AbySalto.Mid.Domain.Models.Basket", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.BasketItem", b =>
                 {
-                    b.HasOne("AbySalto.Mid.Domain.Models.Basket", "Basket")
+                    b.HasOne("AbySalto.Mid.Domain.Models.Basket", null)
                         .WithMany("BasketItems")
                         .HasForeignKey("BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("AbySalto.Mid.Domain.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+            modelBuilder.Entity("AbySalto.Mid.Domain.Models.FavoriteCollectionItem", b =>
+                {
+                    b.HasOne("AbySalto.Mid.Domain.Models.User", null)
+                        .WithMany("FavoriteCollectionItems")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Basket");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.Basket", b =>
@@ -153,6 +144,8 @@ namespace AbySalto.Mid.Infrastructure.Migrations
             modelBuilder.Entity("AbySalto.Mid.Domain.Models.User", b =>
                 {
                     b.Navigation("Basket");
+
+                    b.Navigation("FavoriteCollectionItems");
                 });
 #pragma warning restore 612, 618
         }
