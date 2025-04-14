@@ -1,6 +1,6 @@
 
 using AbySalto.Mid.Application;
-using AbySalto.Mid.Infrastructure;
+using System.Reflection;
 
 namespace AbySalto.Mid
 {
@@ -15,14 +15,16 @@ namespace AbySalto.Mid
                 .AddApplication()
                 .AddInfrastructure(builder.Configuration);
 
+            builder.Services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+
             builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
