@@ -2,7 +2,7 @@
 
 namespace AbySalto.Mid.Application.Commands
 {
-    public class AddToBasketCommand : IRequest<bool>
+    public class AddToBasketCommand : IRequest
     {
         public int UserId { get; set; }
         public int ProductId { get; set; }

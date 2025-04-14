@@ -16,7 +16,7 @@ namespace AbySalto.Mid.Infrastructure.DatabaseContext
         {
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Basket)
-                .WithOne(b => b.User)
+                .WithOne()
                 .HasForeignKey<Basket>(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade);  // This ensures cascading save operations
         }

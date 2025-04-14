@@ -6,24 +6,24 @@ using MediatR;
 
 namespace AbySalto.Mid.Application.CommandHandlers
 {
-    public class AddToBasketHandler : IRequestHandler<AddToBasketCommand, bool>
+    public class AddToBasketHandler : IRequestHandler<AddToBasketCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly IRepository<Basket> _basketRepository;
 
-        public AddToBasketHandler(IUserRepository userRepository, IRepository<Basket> basketRepocitory)
+        public AddToBasketHandler(IUserRepository userRepository, IRepository<Basket> basketRepository)
         {
             _userRepository = userRepository;
-            _basketRepository = basketRepocitory;
+            _basketRepository = basketRepository;
         }
 
-        public async Task<bool> Handle(AddToBasketCommand request, CancellationToken cancellationToken)
+        public async Task Handle(AddToBasketCommand request, CancellationToken cancellationToken)
         {
            var user = await _userRepository.GetFullObjectById(request.UserId, cancellationToken);
 
             if (user?.Id == null)
             {
-                return false;
+                return;
             }
 
             var existing = user.Basket?.BasketItems.FirstOrDefault(c => c.ProductId == request.ProductId);
@@ -33,22 +33,17 @@ namespace AbySalto.Mid.Application.CommandHandlers
             }
             else
             {
-                user.Basket?.BasketItems.Add(new BasketItem { ProductId = request.ProductId, Quantity = request.Quantity });
-                if (user.Basket?.Id == 0)
+                if(user.Basket?.Id == 0)
                 {
                     user.Basket.UserId = user.Id;
                     await _basketRepository.AddAsync(user.Basket);
+                    await _basketRepository.SaveChangesAsync();
                 }
-                else
-                {
-                    _basketRepository.Update(user.Basket);
-                }
+                user.Basket?.BasketItems.Add(new BasketItem { ProductId = request.ProductId, Quantity = request.Quantity });
             }
 
             await _userRepository.UpdateAndSaveAsync(user, cancellationToken);
-            await _basketRepository.SaveChangesAsync();
 
-            return true;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace AbySalto.Mid.Domain.Models
         public Product? Product { get; set; }
         [Required]
         public int BasketId { get; set; }
-        public Basket? Basket { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -14,7 +14,6 @@ namespace AbySalto.Mid.Domain.Models
         public int Id { get; set; }
         [Required]
         public int UserId { get; set; }
-        public User? User { get; set; }
         public ICollection<BasketItem> BasketItems { get; private set; } = [];
     }
 }

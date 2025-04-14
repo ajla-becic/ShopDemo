@@ -16,5 +16,6 @@ namespace AbySalto.Mid.Domain.Interfaces
         Task SaveChangesAsync();
         void Delete(T entity);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+        Task<T> FindFirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
     }
 }
