@@ -19,9 +19,19 @@ namespace AbySalto.Mid.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? sortBy = null,
+            [FromQuery] bool sortDesc = false)
         {
-            var result = await _mediator.Send(new GetProductsQuery());
+            var query = new GetProductsQuery
+            {
+                Page = page,
+                PageSize = pageSize,
+                SortBy = sortBy,
+                SortDesc = sortDesc
+            };
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 

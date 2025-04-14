@@ -16,7 +16,35 @@ namespace AbySalto.Mid.Application.QueryHandler
 
         public async Task<List<Product>?> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            return await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync();
+
+            if (products == null) 
+            { 
+                throw new ArgumentNullException(nameof(products));
+            }
+
+            // Optional: sorting
+            if (!string.IsNullOrEmpty(request.SortBy))
+            {
+                products = request.SortBy.ToLower() switch
+                {
+                    "title" => request.SortDesc
+                        ? products.OrderByDescending(p => p.Title).ToList()
+                        : products.OrderBy(p => p.Title).ToList(),
+
+                    "price" => request.SortDesc
+                        ? products.OrderByDescending(p => p.Price).ToList()
+                        : products.OrderBy(p => p.Price).ToList(),
+
+                    _ => products
+                };
+            }
+
+            // Pagination
+            return products
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToList();
         }
     }
 
